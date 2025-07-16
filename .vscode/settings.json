@@ -1,0 +1,10 @@
+{
+    "i18n-ally.localesPaths": [
+        "src/locales"
+    ],
+    "i18n-ally.extract.ignoredByFiles": {
+        "src\\views\\Login\\components\\LoginForm.vue": [
+            "captchaData.value?.img || ''"
+        ]
+    }
+}
