@@ -90,7 +90,11 @@ const tableColumns = reactive<TableColumn[]>([
       default: (data: any) => {
         return (
           <>
-            <BaseButton type="primary" onClick={() => action(data.row, 'edit')}>
+            <BaseButton
+              type="primary"
+              v-show={hasPermi(ApiDept.DeptEdit)}
+              onClick={() => action(data.row, 'edit')}
+            >
               {t('button.edit')}
             </BaseButton>
             <BaseButton type="success" onClick={() => action(data.row, 'detail')}>

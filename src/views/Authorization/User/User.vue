@@ -72,6 +72,10 @@ const tableColumns = reactive<TableColumn[]>([
     label: t('menuuser.nickname')
   },
   {
+    field: 'dept_name',
+    label: t('menuuser.role')
+  },
+  {
     field: 'role_name',
     label: t('menuuser.role')
   },
@@ -117,7 +121,7 @@ const tableColumns = reactive<TableColumn[]>([
     }
   },
   {
-    field: 'create_time',
+    field: 'created_at',
     label: t('menuuser.createTime')
   },
   {

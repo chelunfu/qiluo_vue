@@ -623,5 +623,9 @@ export default {
   },
   form: {
     default: '默认'
+  },
+  testdatascope: {
+    title: '标题',
+    content: '内容'
   }
 }
