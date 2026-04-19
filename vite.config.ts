@@ -29,14 +29,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
   } else {
     env = loadEnv(mode, root)
   }
+
   return {
     base: env.VITE_BASE_PATH,
     plugins: [
-      Vue({
-        script: {
-          defineModel: true
-        }
-      }),
+      Vue({ script: { defineModel: true } }),
       VueJsx(),
       ServerUrlCopy(),
       progress(),
@@ -48,9 +45,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
                 libraryName: 'element-plus',
                 esModule: true,
                 resolveStyle: (name) => {
-                  if (name === 'click-outside') {
-                    return ''
-                  }
+                  if (name === 'click-outside') return ''
                   return `element-plus/es/components/${name.replace(/^el-/, '')}/style/css`
                 }
               }
@@ -59,7 +54,7 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         : undefined,
       EslintPlugin({
         cache: false,
-        include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx'] // 检查的文件
+        include: ['src/**/*.vue', 'src/**/*.ts', 'src/**/*.tsx']
       }),
       VueI18nPlugin({
         runtimeOnly: true,
@@ -79,15 +74,12 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
             localEnabled: !isBuild,
             prodEnabled: isBuild,
             injectCode: `
-          import { setupProdMockServer } from '../mock/_createProductionServer'
-
-          setupProdMockServer()
-          `
+              import { setupProdMockServer } from '../mock/_createProductionServer'
+              setupProdMockServer()
+            `
           })
         : undefined,
-      ViteEjsPlugin({
-        title: env.VITE_APP_TITLE
-      }),
+      ViteEjsPlugin({ title: env.VITE_APP_TITLE }),
       UnoCSS()
     ],
 
@@ -99,12 +91,13 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         }
       }
     },
+
     resolve: {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.less', '.css'],
       alias: [
         {
           find: 'vue-i18n',
-          replacement: 'vue-i18n/dist/vue-i18n.cjs.js'
+          replacement: 'vue-i18n/dist/vue-i18n.esm-bundler.js' // ✅ 修复
         },
         {
           find: /\@\//,
@@ -112,30 +105,68 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
         }
       ]
     },
+
     esbuild: {
       pure: env.VITE_DROP_CONSOLE === 'true' ? ['console.log'] : undefined,
       drop: env.VITE_DROP_DEBUGGER === 'true' ? ['debugger'] : undefined
     },
+
     build: {
       target: 'es2015',
       outDir: env.VITE_OUT_DIR || 'dist',
       sourcemap: env.VITE_SOURCEMAP === 'true',
-      // brotliSize: false,
       rollupOptions: {
         plugins: env.VITE_USE_BUNDLE_ANALYZER === 'true' ? [visualizer()] : undefined,
-        // 拆包
         output: {
-          manualChunks: {
-            'vue-chunks': ['vue', 'vue-router', 'pinia', 'vue-i18n'],
-            'element-plus': ['element-plus'],
-            'wang-editor': ['@wangeditor/editor', '@wangeditor/editor-for-vue'],
-            echarts: ['echarts', 'echarts-wordcloud']
-          }
+          // ✅ 函数形式，精确控制分包层级
+          manualChunks(id) {
+            if (
+              id.includes('node_modules/vue/') ||
+              id.includes('node_modules/@vue/runtime-core') ||
+              id.includes('node_modules/@vue/runtime-dom') ||
+              id.includes('node_modules/@vue/reactivity') ||
+              id.includes('node_modules/@vue/shared') ||
+              id.includes('node_modules/@vue/compiler')
+            ) {
+              return 'vue-core'
+            }
+            if (
+              id.includes('node_modules/vue-router') ||
+              id.includes('node_modules/pinia') ||
+              id.includes('node_modules/vue-i18n') ||
+              id.includes('node_modules/@vueuse')
+            ) {
+              return 'vue-vendor'
+            }
+            if (id.includes('node_modules/element-plus')) {
+              return 'element-plus'
+            }
+            if (
+              id.includes('node_modules/@wangeditor/editor') ||
+              id.includes('node_modules/@wangeditor/editor-for-vue')
+            ) {
+              return 'wang-editor'
+            }
+            if (
+              id.includes('node_modules/echarts') ||
+              id.includes('node_modules/echarts-wordcloud') ||
+              id.includes('node_modules/zrender')
+            ) {
+              return 'echarts'
+            }
+            if (id.includes('node_modules')) {
+              return 'vendor'
+            }
+          },
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]'
         }
       },
       cssCodeSplit: !(env.VITE_USE_CSS_SPLIT === 'false'),
       cssTarget: ['chrome31']
     },
+
     server: {
       port: 4000,
       proxy: {
@@ -145,11 +176,10 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           rewrite: (path) => path
         }
       },
-      hmr: {
-        overlay: false
-      },
+      hmr: { overlay: false },
       host: '0.0.0.0'
     },
+
     optimizeDeps: {
       include: [
         'vue',
