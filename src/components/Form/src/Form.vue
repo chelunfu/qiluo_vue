@@ -320,7 +320,8 @@ export default defineComponent({
               // 如果field是多层路径，需要转换成对象
               const itemVal = computed({
                 get: () => {
-                  return get(formModel.value, item.field)
+                  const val = get(formModel.value, item.field)
+                  return item.component === ComponentNameEnum.UPLOAD ? (val ?? []) : val
                 },
                 set: (val) => {
                   set(formModel.value, item.field, val)

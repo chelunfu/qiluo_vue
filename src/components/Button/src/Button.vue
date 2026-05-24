@@ -112,7 +112,7 @@ const style = computed(() => {
     v-bind="{ ...props }"
     :color="color"
     :style="style"
-    @click="() => emits('click')"
+    @click="(e: Event) => emits('click', e)"
   >
     <slot></slot>
     <slot name="icon"></slot>

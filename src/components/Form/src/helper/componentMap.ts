@@ -48,6 +48,7 @@ const componentMap: Recordable<Component, ComponentName> = {
   TimeSelect: ElTimeSelect,
   SelectV2: ElSelectV2,
   InputPassword: InputPassword,
+  InputTextarea: ElInput,
   Editor: Editor,
   TreeSelect: ElTreeSelect,
   Upload: ElUpload,

@@ -101,6 +101,10 @@ export const setComponentProps = (item: FormSchema): Recordable => {
     ...item.componentProps,
     ...newOnEvents
   }
+  // InputTextarea 组件自动设置 type 为 textarea
+  if (item.component === ComponentNameEnum.INPUT_TEXTAREA) {
+    componentProps.type = 'textarea'
+  }
   // 需要删除额外的属性
   if (componentProps.slots) {
     delete componentProps.slots

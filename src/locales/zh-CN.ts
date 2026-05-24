@@ -578,7 +578,22 @@ export default {
     activerolenonull: '激活角色不能为空',
     mustactiverolenull: '激活角色必须在已选择角色内选择',
     userrolenonull: '用户角色不能为空',
-    userdeptnonull: '用户部门不能为空'
+    userdeptnonull: '用户部门不能为空',
+    author: '作者',
+    is_published: '是否发布',
+    view_count: '浏览量',
+    download_count: '下载量',
+    rating: '评分',
+    cover: '封面',
+    category_id: '分类ID',
+    description: '描述',
+    weight: '权重',
+    created_at: '创建时间',
+    updated_at: '更新时间',
+    name: '名称',
+    sort: '排序',
+    is_active: '是否启用',
+    content: '内容'
   },
   usertable: {
     title: '标题',

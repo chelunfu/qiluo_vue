@@ -580,7 +580,22 @@ export default {
     activerolenonull: 'Active role cannot be empty',
     mustactiverolenull: 'Active role must be selected from chosen roles',
     userrolenonull: 'User role cannot be empty',
-    userdeptnonull: 'User department cannot be empty'
+    userdeptnonull: 'User department cannot be empty',
+    author: 'author',
+    is_published: 'is published',
+    view_count: 'view count',
+    download_count: 'download count',
+    rating: 'rating',
+    cover: 'cover',
+    category_id: 'category id',
+    description: 'description',
+    weight: 'weight',
+    created_at: 'created at',
+    updated_at: 'updated at',
+    name: 'name',
+    sort: 'sort',
+    is_active: 'is active',
+    content: 'content'
   },
   usertable: {
     title: 'Title',

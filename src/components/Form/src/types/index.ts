@@ -53,6 +53,7 @@ export enum ComponentNameEnum {
   TIME_SELECT = 'TimeSelect',
   SELECT_V2 = 'SelectV2',
   INPUT_PASSWORD = 'InputPassword',
+  INPUT_TEXTAREA = 'InputTextarea',
   EDITOR = 'Editor',
   TREE_SELECT = 'TreeSelect',
   UPLOAD = 'Upload',
@@ -513,6 +514,16 @@ export interface FormItemProps extends Partial<ElFormItemProps> {
 }
 
 export interface UploadComponentProps extends Partial<UploadProps> {
+  on?: {
+    success?: (...args: any[]) => void
+    exceed?: (...args: any[]) => void
+    beforeUpload?: (...args: any[]) => boolean | void
+    change?: (...args: any[]) => void
+    remove?: (...args: any[]) => void
+    preview?: (...args: any[]) => void
+    error?: (...args: any[]) => void
+    progress?: (...args: any[]) => void
+  }
   slots?: {
     default?: (...args: any[]) => JSX.Element | null
     trigger?: (...args: any[]) => JSX.Element | null
