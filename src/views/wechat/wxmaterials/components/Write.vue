@@ -20,7 +20,7 @@ const props = defineProps({
 const formSchema = ref<FormSchema[]>([
   {
     field: 'account_id',
-    label: t('wx_auto_replies.account_id'),
+    label: t('wx_materials.account_id'),
     component: 'Select',
     componentProps: {
       filterable: true
@@ -37,14 +37,16 @@ const formSchema = ref<FormSchema[]>([
     }
   },
   {
-    field: 'reply_type',
-    label: t('wx_auto_replies.reply_type'),
+    field: 'media_type',
+    label: t('wx_materials.media_type'),
     component: 'Select',
     componentProps: {
       options: [
-        { label: t('wx_auto_replies.reply_type_subscribe'), value: 1 },
-        { label: t('wx_auto_replies.reply_type_keyword'), value: 2 },
-        { label: t('wx_auto_replies.reply_type_default'), value: 3 }
+        { label: t('wx_materials.media_type_image'), value: 'image' },
+        { label: t('wx_materials.media_type_voice'), value: 'voice' },
+        { label: t('wx_materials.media_type_video'), value: 'video' },
+        { label: t('wx_materials.media_type_thumb'), value: 'thumb' },
+        { label: t('wx_materials.media_type_news'), value: 'news' }
       ]
     },
     colProps: {
@@ -52,87 +54,16 @@ const formSchema = ref<FormSchema[]>([
     }
   },
   {
-    field: 'keyword',
-    label: t('wx_auto_replies.keyword'),
+    field: 'name',
+    label: t('wx_materials.name'),
     component: 'Input',
-    componentProps: {
-      placeholder: t('wx_auto_replies.keyword')
-    },
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'match_type',
-    label: t('wx_auto_replies.match_type'),
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: t('wx_auto_replies.match_type_full'), value: 1 },
-        { label: t('wx_auto_replies.match_type_partial'), value: 2 },
-        { label: t('wx_auto_replies.match_type_regex'), value: 3 }
-      ]
-    },
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'message_type',
-    label: t('wx_auto_replies.message_type'),
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: t('wx_auto_replies.message_type_text'), value: 'text' },
-        { label: t('wx_auto_replies.message_type_image'), value: 'image' },
-        { label: t('wx_auto_replies.message_type_voice'), value: 'voice' },
-        { label: t('wx_auto_replies.message_type_music'), value: 'music' },
-        { label: t('wx_auto_replies.message_type_news'), value: 'news' },
-        { label: t('wx_auto_replies.message_type_video'), value: 'video' }
-      ]
-    },
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'content',
-    label: t('wx_auto_replies.content'),
-    component: 'InputTextarea',
     colProps: {
       span: 24
     }
   },
   {
     field: 'media_id',
-    label: t('wx_auto_replies.media_id'),
-    component: 'Input',
-    componentProps: {
-      placeholder: t('wx_auto_replies.media_id')
-    },
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'title',
-    label: t('wx_auto_replies.title'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'description',
-    label: t('wx_auto_replies.description'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'pic_url',
-    label: t('wx_auto_replies.pic_url'),
+    label: t('wx_materials.media_id'),
     component: 'Input',
     colProps: {
       span: 24
@@ -140,23 +71,95 @@ const formSchema = ref<FormSchema[]>([
   },
   {
     field: 'url',
-    label: t('wx_auto_replies.url'),
+    label: t('wx_materials.url'),
     component: 'Input',
     colProps: {
       span: 24
     }
   },
   {
-    field: 'music_url',
-    label: t('wx_auto_replies.music_url'),
+    field: 'local_path',
+    label: t('wx_materials.local_path'),
     component: 'Input',
     colProps: {
       span: 24
     }
   },
   {
-    field: 'hq_music_url',
-    label: t('wx_auto_replies.hq_music_url'),
+    field: 'file_size',
+    label: t('wx_materials.file_size'),
+    component: 'InputNumber',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'content_type',
+    label: t('wx_materials.content_type'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'width',
+    label: t('wx_materials.width'),
+    component: 'InputNumber',
+    colProps: {
+      span: 12
+    }
+  },
+  {
+    field: 'height',
+    label: t('wx_materials.height'),
+    component: 'InputNumber',
+    colProps: {
+      span: 12
+    }
+  },
+  {
+    field: 'duration',
+    label: t('wx_materials.duration'),
+    component: 'InputNumber',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'title',
+    label: t('wx_materials.title'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'author',
+    label: t('wx_materials.author'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'digest',
+    label: t('wx_materials.digest'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'description',
+    label: t('wx_materials.description'),
+    component: 'InputTextarea',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'introduction',
+    label: t('wx_materials.introduction'),
     component: 'Input',
     colProps: {
       span: 24
@@ -164,20 +167,44 @@ const formSchema = ref<FormSchema[]>([
   },
   {
     field: 'thumb_media_id',
-    label: t('wx_auto_replies.thumb_media_id'),
+    label: t('wx_materials.thumb_media_id'),
     component: 'Input',
     colProps: {
       span: 24
     }
   },
   {
-    field: 'status',
-    label: t('wx_auto_replies.status'),
+    field: 'thumb_url',
+    label: t('wx_materials.thumb_url'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'content_source_url',
+    label: t('wx_materials.content_source_url'),
+    component: 'Input',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'content',
+    label: t('wx_materials.content'),
+    component: 'InputTextarea',
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'is_permanent',
+    label: t('wx_materials.is_permanent'),
     component: 'Select',
     componentProps: {
       options: [
-        { label: t('wx_auto_replies.status_disabled'), value: 0 },
-        { label: t('wx_auto_replies.status_enabled'), value: 1 }
+        { label: t('wx_materials.permanent_yes'), value: 1 },
+        { label: t('wx_materials.permanent_no'), value: 0 }
       ]
     },
     colProps: {
@@ -185,16 +212,22 @@ const formSchema = ref<FormSchema[]>([
     }
   },
   {
-    field: 'priority',
-    label: t('wx_auto_replies.priority'),
-    component: 'InputNumber',
+    field: 'sync_status',
+    label: t('wx_materials.sync_status'),
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_materials.sync_status_synced'), value: 1 },
+        { label: t('wx_materials.sync_status_not_synced'), value: 0 }
+      ]
+    },
     colProps: {
       span: 24
     }
   }
 ])
 
-const rules = reactive({ account_id: [required()], reply_type: [required()] })
+const rules = reactive({ account_id: [required()], media_type: [required()] })
 
 const { formRegister, formMethods } = useForm()
 const { setValues, getFormData, getElFormExpose } = formMethods
@@ -214,7 +247,6 @@ watch(
   () => props.currentRow,
   (currentRow) => {
     if (!currentRow) return
-    console.log(currentRow)
     setValues(currentRow)
   },
   {

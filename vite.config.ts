@@ -174,6 +174,11 @@ export default ({ command, mode }: ConfigEnv): UserConfig => {
           target: 'http://127.0.0.1:5001',
           changeOrigin: true,
           rewrite: (path) => path
+        },
+        '/static': {
+          target: 'http://127.0.0.1:5001',
+          changeOrigin: true,
+          rewrite: (path) => path
         }
       },
       hmr: { overlay: false },

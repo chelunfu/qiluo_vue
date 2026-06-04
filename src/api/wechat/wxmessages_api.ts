@@ -4,7 +4,9 @@ export enum WxMessagesApi {
   list = '/wechat/wxmessages/list',
   add = '/wechat/wxmessages/add',
   edit = '/wechat/wxmessages/edit',
-  del = '/wechat/wxmessages/del'
+  del = '/wechat/wxmessages/del',
+  conversation = '/wechat/wxmessages/conversation',
+  reply = '/wechat/wxmessages/reply'
 }
 
 export const GetWxMessagesList = (params: any) => {
@@ -21,4 +23,12 @@ export const EditWxMessages = (params: any) => {
 
 export const DelWxMessages = (params: any) => {
   return request.delete({ url: WxMessagesApi.del, params })
+}
+
+export const GetConversation = (params: any) => {
+  return request.get({ url: WxMessagesApi.conversation, params })
+}
+
+export const ReplyMessage = (data: any) => {
+  return request.post({ url: WxMessagesApi.reply, data })
 }

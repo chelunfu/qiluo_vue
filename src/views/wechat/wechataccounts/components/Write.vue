@@ -9,6 +9,24 @@ const { t } = useI18n()
 
 const { required } = useValidator()
 
+const accountTypeOptions = [
+  { label: t('wx_accounts.account_type_subscription'), value: 1 },
+  { label: t('wx_accounts.account_type_service'), value: 2 },
+  { label: t('wx_accounts.account_type_enterprise'), value: 3 },
+  { label: t('wx_accounts.account_type_mini_program'), value: 4 }
+]
+
+const statusOptions = [
+  { label: t('wx_accounts.status_disabled'), value: 0 },
+  { label: t('wx_accounts.status_enabled'), value: 1 }
+]
+
+const messageModeOptions = [
+  { label: t('wx_accounts.message_mode_plaintext'), value: 1 },
+  { label: t('wx_accounts.message_mode_compatible'), value: 2 },
+  { label: t('wx_accounts.message_mode_security'), value: 3 }
+]
+
 const props = defineProps({
   currentRow: {
     type: Object as PropType<any>,
@@ -18,9 +36,9 @@ const props = defineProps({
 
 const formSchema = ref<FormSchema[]>([
   {
-    field: 'id',
-    label: t('wx_accounts.id'),
-    component: 'InputNumber',
+    field: 'app_id',
+    label: t('wx_accounts.app_id'),
+    component: 'Input',
     colProps: {
       span: 24
     }
@@ -44,7 +62,10 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'account_type',
     label: t('wx_accounts.account_type'),
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: accountTypeOptions
+    },
     colProps: {
       span: 24
     }
@@ -52,22 +73,36 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'status',
     label: t('wx_accounts.status'),
+    component: 'Select',
+    componentProps: {
+      options: statusOptions
+    },
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'message_mode',
+    label: t('wx_accounts.message_mode'),
+    component: 'Select',
+    componentProps: {
+      options: messageModeOptions
+    },
+    colProps: {
+      span: 24
+    }
+  },
+  {
+    field: 'original_id',
+    label: t('wx_accounts.original_id'),
     component: 'Input',
     colProps: {
       span: 24
     }
   },
   {
-    field: 'access_token',
-    label: t('wx_accounts.access_token'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'token_expires_at',
-    label: t('wx_accounts.token_expires_at'),
+    field: 'wechat_id',
+    label: t('wx_accounts.wechat_id'),
     component: 'Input',
     colProps: {
       span: 24
@@ -100,7 +135,7 @@ const formSchema = ref<FormSchema[]>([
 ])
 
 const rules = reactive({
-  id: [required()],
+  app_id: [required()],
   app_secret: [required()],
   account_name: [required()],
   account_type: [required()]

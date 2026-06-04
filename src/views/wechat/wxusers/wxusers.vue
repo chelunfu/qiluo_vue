@@ -1,10 +1,10 @@
 <script setup lang="tsx">
 import { reactive, ref, unref } from 'vue'
-import { GetWxUsersList, AddWxUsers, EditWxUsers, DelWxUsers } from '@/api/wechat//wxusers_api'
+import { GetWxUsersList, AddWxUsers, EditWxUsers, DelWxUsers } from '@/api/wechat/wxusers_api'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElLink } from 'element-plus'
+import { ElLink, ElTag } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -41,7 +41,7 @@ const { getList, delList } = tableMethods
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'index',
-    label: t('userDemo.index'),
+    label: t('menuuser.index'),
     type: 'index'
   },
   {
@@ -62,7 +62,18 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'sex',
-    label: t('wx_users.sex')
+    label: t('wx_users.sex'),
+    slots: {
+      default: (data: any) => {
+        const sexMap: Record<number, { label: string; type: string }> = {
+          0: { label: t('wx_users.sex_unknown'), type: 'info' },
+          1: { label: t('wx_users.sex_male'), type: 'primary' },
+          2: { label: t('wx_users.sex_female'), type: 'danger' }
+        }
+        const info = sexMap[data.row.sex] || { label: '-', type: 'info' }
+        return <ElTag type={info.type}>{info.label}</ElTag>
+      }
+    }
   },
   {
     field: 'city',
@@ -94,7 +105,17 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'subscribe_status',
-    label: t('wx_users.subscribe_status')
+    label: t('wx_users.subscribe_status'),
+    slots: {
+      default: (data: any) => {
+        const statusMap: Record<number, { label: string; type: string }> = {
+          0: { label: t('wx_users.subscribe_status_no'), type: 'danger' },
+          1: { label: t('wx_users.subscribe_status_yes'), type: 'success' }
+        }
+        const info = statusMap[data.row.subscribe_status] || { label: '-', type: 'info' }
+        return <ElTag type={info.type}>{info.label}</ElTag>
+      }
+    }
   },
   {
     field: 'remark',
@@ -123,7 +144,7 @@ const tableColumns = reactive<TableColumn[]>([
 
   {
     field: 'action',
-    label: t('userDemo.action'),
+    label: t('menuuser.action'),
     width: 240,
     slots: {
       default: (data: any) => {
@@ -131,10 +152,10 @@ const tableColumns = reactive<TableColumn[]>([
         return (
           <>
             <BaseButton type="primary" onClick={() => action(row, 'edit')}>
-              {t('exampleDemo.edit')}
+              {t('usertable.edit')}
             </BaseButton>
             <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
+              {t('usertable.del')}
             </BaseButton>
           </>
         )
@@ -145,7 +166,7 @@ const tableColumns = reactive<TableColumn[]>([
 
 const id = ref<string>()
 const delData = async (row: any) => {
-  id.value = row.dict_id
+  id.value = row.id
   await delList(1).finally(() => {
     console.log('删除成功')
   })
@@ -153,99 +174,37 @@ const delData = async (row: any) => {
 
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'id',
-    component: 'Input',
-    label: t('wx_users.id')
-  },
-  {
-    field: 'openid',
-    component: 'Input',
-    label: t('wx_users.openid')
-  },
-  {
-    field: 'unionid',
-    component: 'Input',
-    label: t('wx_users.unionid')
-  },
-  {
     field: 'nickname',
     component: 'Input',
     label: t('wx_users.nickname')
   },
   {
     field: 'sex',
-    component: 'Input',
-    label: t('wx_users.sex')
-  },
-  {
-    field: 'city',
-    component: 'Input',
-    label: t('wx_users.city')
-  },
-  {
-    field: 'country',
-    component: 'Input',
-    label: t('wx_users.country')
-  },
-  {
-    field: 'province',
-    component: 'Input',
-    label: t('wx_users.province')
-  },
-  {
-    field: 'language',
-    component: 'Input',
-    label: t('wx_users.language')
-  },
-  {
-    field: 'headimgurl',
-    component: 'Input',
-    label: t('wx_users.headimgurl')
-  },
-  {
-    field: 'subscribe_time',
-    component: 'Input',
-    label: t('wx_users.subscribe_time')
-  },
-  {
-    field: 'unsubscribe_time',
-    component: 'Input',
-    label: t('wx_users.unsubscribe_time')
+    component: 'Select',
+    label: t('wx_users.sex'),
+    componentProps: {
+      options: [
+        { label: t('wx_users.sex_unknown'), value: 0 },
+        { label: t('wx_users.sex_male'), value: 1 },
+        { label: t('wx_users.sex_female'), value: 2 }
+      ]
+    }
   },
   {
     field: 'subscribe_status',
-    component: 'Input',
-    label: t('wx_users.subscribe_status')
+    component: 'Select',
+    label: t('wx_users.subscribe_status'),
+    componentProps: {
+      options: [
+        { label: t('wx_users.subscribe_status_no'), value: 0 },
+        { label: t('wx_users.subscribe_status_yes'), value: 1 }
+      ]
+    }
   },
   {
-    field: 'remark',
+    field: 'openid',
     component: 'Input',
-    label: t('wx_users.remark')
-  },
-  {
-    field: 'subscribe_scene',
-    component: 'Input',
-    label: t('wx_users.subscribe_scene')
-  },
-  {
-    field: 'qr_scene',
-    component: 'Input',
-    label: t('wx_users.qr_scene')
-  },
-  {
-    field: 'qr_scene_str',
-    component: 'Input',
-    label: t('wx_users.qr_scene_str')
-  },
-  {
-    field: 'last_interact_time',
-    component: 'Input',
-    label: t('wx_users.last_interact_time')
-  },
-  {
-    field: 'message_count',
-    component: 'Input',
-    label: t('wx_users.message_count')
+    label: t('wx_users.openid')
   }
 ])
 
@@ -266,14 +225,14 @@ const writeRef = ref<ComponentRef<typeof Write>>()
 const saveLoading = ref(false)
 
 const action = (row: any, type: string) => {
-  dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
+  dialogTitle.value = t(type === 'edit' ? 'usertable.edit' : 'usertable.detail')
   actionType.value = type
   currentRow.value = row
   dialogVisible.value = true
 }
 
 const AddAction = () => {
-  dialogTitle.value = t('exampleDemo.add')
+  dialogTitle.value = t('usertable.add')
   actionType.value = 'add'
   const addRow = {
     id: 0,
@@ -325,9 +284,6 @@ const save = async () => {
 <template>
   <ContentWrap>
     <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
-    <div class="mb-10px">
-      <BaseButton type="primary" @click="AddAction">{ t('exampleDemo.add') }</BaseButton>
-    </div>
     <Table
       v-model:current-page="page_num"
       v-model:page-size="page_size"
@@ -353,9 +309,9 @@ const save = async () => {
         :loading="saveLoading"
         @click="save"
       >
-        { t('exampleDemo.save') }
+        {{ t('usertable.save') }}
       </BaseButton>
-      <BaseButton @click="dialogVisible = false">{ t('dialogDemo.close') }</BaseButton>
+      <BaseButton @click="dialogVisible = false">{{ t('button.close') }}</BaseButton>
     </template>
   </Dialog>
 </template>

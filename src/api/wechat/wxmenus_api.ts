@@ -4,7 +4,10 @@ export enum WxMenusApi {
   list = '/wechat/wxmenus/list',
   add = '/wechat/wxmenus/add',
   edit = '/wechat/wxmenus/edit',
-  del = '/wechat/wxmenus/del'
+  del = '/wechat/wxmenus/del',
+  pullMenu = '/wechat/wxmenus/pull_menu',
+  syncMenu = '/wechat/wxmenus/sync_menu',
+  deleteRemoteMenu = '/wechat/wxmenus/delete_remote_menu'
 }
 
 export const GetWxMenusList = (params: any) => {
@@ -21,4 +24,16 @@ export const EditWxMenus = (params: any) => {
 
 export const DelWxMenus = (params: any) => {
   return request.delete({ url: WxMenusApi.del, params })
+}
+
+export const PullMenu = (data: any) => {
+  return request.post({ url: WxMenusApi.pullMenu, data })
+}
+
+export const SyncMenu = (data: any) => {
+  return request.post({ url: WxMenusApi.syncMenu, data })
+}
+
+export const DeleteRemoteMenu = (data: any) => {
+  return request.post({ url: WxMenusApi.deleteRemoteMenu, data })
 }

@@ -9,16 +9,14 @@ import {
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElLink } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
 import Write from './components/Write.vue'
 import { Dialog } from '@/components/Dialog'
 import { BaseButton } from '@/components/Button'
-import { useRouter } from 'vue-router'
+import { ElTag } from 'element-plus'
 
-const { push } = useRouter()
 const { t } = useI18n()
 
 const { tableRegister, tableState, tableMethods } = useTable({
@@ -34,7 +32,6 @@ const { tableRegister, tableState, tableMethods } = useTable({
     }
   },
   fetchDelApi: async () => {
-    console.log(unref(id))
     const res = await DelWxAutoReplies(unref(id) as string)
     return !!res
   }
@@ -46,69 +43,86 @@ const { getList, delList } = tableMethods
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'index',
-    label: t('userDemo.index'),
+    label: t('menuuser.index'),
     type: 'index'
-  },
-  {
-    field: 'id',
-    label: t('wx_auto_replies.id')
-  },
-  {
-    field: 'reply_type',
-    label: t('wx_auto_replies.reply_type')
   },
   {
     field: 'keyword',
     label: t('wx_auto_replies.keyword')
   },
   {
+    field: 'reply_type',
+    label: t('wx_auto_replies.reply_type'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        const typeMap: Record<number, { label: string; type: string }> = {
+          1: { label: t('wx_auto_replies.reply_type_subscribe'), type: 'warning' },
+          2: { label: t('wx_auto_replies.reply_type_keyword'), type: 'primary' },
+          3: { label: t('wx_auto_replies.reply_type_default'), type: 'info' }
+        }
+        const item = typeMap[row.reply_type] || { label: row.reply_type, type: 'info' }
+        return <ElTag type={item.type}>{item.label}</ElTag>
+      }
+    }
+  },
+  {
     field: 'match_type',
-    label: t('wx_auto_replies.match_type')
+    label: t('wx_auto_replies.match_type'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        const typeMap: Record<number, { label: string; type: string }> = {
+          1: { label: t('wx_auto_replies.match_type_full'), type: 'success' },
+          2: { label: t('wx_auto_replies.match_type_partial'), type: 'warning' },
+          3: { label: t('wx_auto_replies.match_type_regex'), type: 'danger' }
+        }
+        const item = typeMap[row.match_type] || { label: row.match_type, type: 'info' }
+        return <ElTag type={item.type}>{item.label}</ElTag>
+      }
+    }
   },
   {
     field: 'message_type',
-    label: t('wx_auto_replies.message_type')
+    label: t('wx_auto_replies.message_type'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        const typeMap: Record<string, { label: string; type: string }> = {
+          text: { label: t('wx_auto_replies.message_type_text'), type: 'text' as any },
+          image: { label: t('wx_auto_replies.message_type_image'), type: 'success' },
+          voice: { label: t('wx_auto_replies.message_type_voice'), type: 'warning' },
+          music: { label: t('wx_auto_replies.message_type_music'), type: 'danger' },
+          news: { label: t('wx_auto_replies.message_type_news'), type: 'primary' },
+          video: { label: t('wx_auto_replies.message_type_video'), type: 'info' }
+        }
+        const item = typeMap[row.message_type] || { label: row.message_type, type: 'info' }
+        return <ElTag type={item.type}>{item.label}</ElTag>
+      }
+    }
   },
   {
     field: 'content',
     label: t('wx_auto_replies.content')
   },
   {
-    field: 'title',
-    label: t('wx_auto_replies.title')
-  },
-  {
-    field: 'description',
-    label: t('wx_auto_replies.description')
-  },
-  {
-    field: 'pic_url',
-    label: t('wx_auto_replies.pic_url')
-  },
-  {
-    field: 'url',
-    label: t('wx_auto_replies.url')
-  },
-  {
-    field: 'music_url',
-    label: t('wx_auto_replies.music_url')
-  },
-  {
-    field: 'hq_music_url',
-    label: t('wx_auto_replies.hq_music_url')
-  },
-  {
     field: 'status',
-    label: t('wx_auto_replies.status')
+    label: t('wx_auto_replies.status'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        const typeMap: Record<number, { label: string; type: string }> = {
+          0: { label: t('wx_auto_replies.status_disabled'), type: 'danger' },
+          1: { label: t('wx_auto_replies.status_enabled'), type: 'success' }
+        }
+        const item = typeMap[row.status] || { label: row.status, type: 'info' }
+        return <ElTag type={item.type}>{item.label}</ElTag>
+      }
+    }
   },
-  {
-    field: 'priority',
-    label: t('wx_auto_replies.priority')
-  },
-
   {
     field: 'action',
-    label: t('userDemo.action'),
+    label: t('menuuser.action'),
     width: 240,
     slots: {
       default: (data: any) => {
@@ -116,10 +130,10 @@ const tableColumns = reactive<TableColumn[]>([
         return (
           <>
             <BaseButton type="primary" onClick={() => action(row, 'edit')}>
-              {t('exampleDemo.edit')}
+              {t('usertable.edit')}
             </BaseButton>
             <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
+              {t('usertable.del')}
             </BaseButton>
           </>
         )
@@ -130,7 +144,7 @@ const tableColumns = reactive<TableColumn[]>([
 
 const id = ref<string>()
 const delData = async (row: any) => {
-  id.value = row.dict_id
+  id.value = row.id
   await delList(1).finally(() => {
     console.log('删除成功')
   })
@@ -138,74 +152,47 @@ const delData = async (row: any) => {
 
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'id',
-    component: 'Input',
-    label: t('wx_auto_replies.id')
-  },
-  {
-    field: 'reply_type',
-    component: 'Input',
-    label: t('wx_auto_replies.reply_type')
-  },
-  {
     field: 'keyword',
     component: 'Input',
     label: t('wx_auto_replies.keyword')
   },
   {
-    field: 'match_type',
-    component: 'Input',
-    label: t('wx_auto_replies.match_type')
+    field: 'reply_type',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_auto_replies.reply_type_subscribe'), value: 1 },
+        { label: t('wx_auto_replies.reply_type_keyword'), value: 2 },
+        { label: t('wx_auto_replies.reply_type_default'), value: 3 }
+      ]
+    },
+    label: t('wx_auto_replies.reply_type')
   },
   {
     field: 'message_type',
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_auto_replies.message_type_text'), value: 'text' },
+        { label: t('wx_auto_replies.message_type_image'), value: 'image' },
+        { label: t('wx_auto_replies.message_type_voice'), value: 'voice' },
+        { label: t('wx_auto_replies.message_type_music'), value: 'music' },
+        { label: t('wx_auto_replies.message_type_news'), value: 'news' },
+        { label: t('wx_auto_replies.message_type_video'), value: 'video' }
+      ]
+    },
     label: t('wx_auto_replies.message_type')
   },
   {
-    field: 'content',
-    component: 'Input',
-    label: t('wx_auto_replies.content')
-  },
-  {
-    field: 'title',
-    component: 'Input',
-    label: t('wx_auto_replies.title')
-  },
-  {
-    field: 'description',
-    component: 'Input',
-    label: t('wx_auto_replies.description')
-  },
-  {
-    field: 'pic_url',
-    component: 'Input',
-    label: t('wx_auto_replies.pic_url')
-  },
-  {
-    field: 'url',
-    component: 'Input',
-    label: t('wx_auto_replies.url')
-  },
-  {
-    field: 'music_url',
-    component: 'Input',
-    label: t('wx_auto_replies.music_url')
-  },
-  {
-    field: 'hq_music_url',
-    component: 'Input',
-    label: t('wx_auto_replies.hq_music_url')
-  },
-  {
     field: 'status',
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_auto_replies.status_disabled'), value: 0 },
+        { label: t('wx_auto_replies.status_enabled'), value: 1 }
+      ]
+    },
     label: t('wx_auto_replies.status')
-  },
-  {
-    field: 'priority',
-    component: 'Input',
-    label: t('wx_auto_replies.priority')
   }
 ])
 
@@ -226,30 +213,32 @@ const writeRef = ref<ComponentRef<typeof Write>>()
 const saveLoading = ref(false)
 
 const action = (row: any, type: string) => {
-  dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
+  dialogTitle.value = t(type === 'edit' ? 'usertable.edit' : 'usertable.detail')
   actionType.value = type
   currentRow.value = row
   dialogVisible.value = true
 }
 
 const AddAction = () => {
-  dialogTitle.value = t('exampleDemo.add')
+  dialogTitle.value = t('usertable.add')
   actionType.value = 'add'
   const addRow = {
-    id: 0,
-    reply_type: '',
+    account_id: null,
+    reply_type: 2,
     keyword: null,
-    match_type: null,
-    message_type: '',
+    match_type: 1,
+    message_type: 'text',
     content: null,
+    media_id: null,
     title: null,
     description: null,
     pic_url: null,
     url: null,
     music_url: null,
     hq_music_url: null,
-    status: null,
-    priority: null
+    thumb_media_id: null,
+    status: 1,
+    priority: 0
   }
   currentRow.value = addRow
   dialogVisible.value = true
@@ -281,14 +270,12 @@ const save = async () => {
   <ContentWrap>
     <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
     <div class="mb-10px">
-      <BaseButton type="primary" @click="AddAction">{ t('exampleDemo.add') }</BaseButton>
+      <BaseButton type="primary" @click="AddAction">{{ t('usertable.add') }}</BaseButton>
     </div>
     <Table
       v-model:current-page="page_num"
       v-model:page-size="page_size"
       :columns="tableColumns"
-      default-expand-all
-      node-key="id"
       :data="dataList"
       :loading="loading"
       :pagination="{
@@ -308,9 +295,9 @@ const save = async () => {
         :loading="saveLoading"
         @click="save"
       >
-        { t('exampleDemo.save') }
+        {{ t('usertable.save') }}
       </BaseButton>
-      <BaseButton @click="dialogVisible = false">{ t('dialogDemo.close') }</BaseButton>
+      <BaseButton @click="dialogVisible = false">{{ t('button.close') }}</BaseButton>
     </template>
   </Dialog>
 </template>

@@ -82,6 +82,10 @@ const tableColumns = reactive<TableColumn[]>([
     label: t('menu.path')
   },
   {
+    field: 'order',
+    label: t('menu.order')
+  },
+  {
     field: 'status',
     label: t('menu.status'),
     slots: {

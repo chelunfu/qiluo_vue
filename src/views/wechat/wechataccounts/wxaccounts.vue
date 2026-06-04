@@ -4,7 +4,7 @@ import { GetWxAccountsList, AddWxAccounts, EditWxAccounts, DelWxAccounts } from 
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElLink } from 'element-plus'
+import { ElTag } from 'element-plus'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -15,6 +15,18 @@ import { useRouter } from 'vue-router'
 
 const { push } = useRouter()
 const { t } = useI18n()
+
+const accountTypeOptions = [
+  { label: t('wx_accounts.account_type_subscription'), value: 1 },
+  { label: t('wx_accounts.account_type_service'), value: 2 },
+  { label: t('wx_accounts.account_type_enterprise'), value: 3 },
+  { label: t('wx_accounts.account_type_mini_program'), value: 4 }
+]
+
+const statusOptions = [
+  { label: t('wx_accounts.status_disabled'), value: 0 },
+  { label: t('wx_accounts.status_enabled'), value: 1 }
+]
 
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
@@ -41,53 +53,63 @@ const { getList, delList } = tableMethods
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'index',
-    label: t('userDemo.index'),
+    label: t('menuuser.index'),
     type: 'index'
   },
   {
     field: 'id',
-    label: t('wx_accounts.id')
-  },
-  {
-    field: 'app_secret',
-    label: t('wx_accounts.app_secret')
+    label: t('wx_accounts.id'),
+    width: 180
   },
   {
     field: 'account_name',
     label: t('wx_accounts.account_name')
   },
   {
+    field: 'app_id',
+    label: t('wx_accounts.app_id')
+  },
+  {
     field: 'account_type',
-    label: t('wx_accounts.account_type')
+    label: t('wx_accounts.account_type'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        const typeMap: Record<
+          number,
+          { label: string; type: 'success' | 'primary' | 'warning' | 'info' }
+        > = {
+          1: { label: t('wx_accounts.account_type_subscription'), type: 'info' },
+          2: { label: t('wx_accounts.account_type_service'), type: 'primary' },
+          3: { label: t('wx_accounts.account_type_enterprise'), type: 'warning' },
+          4: { label: t('wx_accounts.account_type_mini_program'), type: 'success' }
+        }
+        const item = typeMap[row.account_type]
+        return item ? <ElTag type={item.type}>{item.label}</ElTag> : <span>{row.account_type}</span>
+      }
+    }
   },
   {
     field: 'status',
-    label: t('wx_accounts.status')
-  },
-  {
-    field: 'access_token',
-    label: t('wx_accounts.access_token')
-  },
-  {
-    field: 'token_expires_at',
-    label: t('wx_accounts.token_expires_at')
+    label: t('wx_accounts.status'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        return (
+          <ElTag type={row.status === 1 ? 'success' : 'danger'}>
+            {row.status === 1 ? t('wx_accounts.status_enabled') : t('wx_accounts.status_disabled')}
+          </ElTag>
+        )
+      }
+    }
   },
   {
     field: 'server_url',
     label: t('wx_accounts.server_url')
   },
   {
-    field: 'token',
-    label: t('wx_accounts.token')
-  },
-  {
-    field: 'encoding_aes_key',
-    label: t('wx_accounts.encoding_aes_key')
-  },
-
-  {
     field: 'action',
-    label: t('userDemo.action'),
+    label: t('menuuser.action'),
     width: 240,
     slots: {
       default: (data: any) => {
@@ -95,10 +117,10 @@ const tableColumns = reactive<TableColumn[]>([
         return (
           <>
             <BaseButton type="primary" onClick={() => action(row, 'edit')}>
-              {t('exampleDemo.edit')}
+              {t('usertable.edit')}
             </BaseButton>
             <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
+              {t('usertable.del')}
             </BaseButton>
           </>
         )
@@ -109,7 +131,7 @@ const tableColumns = reactive<TableColumn[]>([
 
 const id = ref<string>()
 const delData = async (row: any) => {
-  id.value = row.dict_id
+  id.value = row.id
   await delList(1).finally(() => {
     console.log('删除成功')
   })
@@ -117,54 +139,27 @@ const delData = async (row: any) => {
 
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'id',
-    component: 'Input',
-    label: t('wx_accounts.id')
-  },
-  {
-    field: 'app_secret',
-    component: 'Input',
-    label: t('wx_accounts.app_secret')
-  },
-  {
     field: 'account_name',
     component: 'Input',
     label: t('wx_accounts.account_name')
   },
   {
     field: 'account_type',
-    component: 'Input',
-    label: t('wx_accounts.account_type')
+    component: 'Select',
+    label: t('wx_accounts.account_type'),
+    componentProps: {
+      options: accountTypeOptions,
+      clearable: true
+    }
   },
   {
     field: 'status',
-    component: 'Input',
-    label: t('wx_accounts.status')
-  },
-  {
-    field: 'access_token',
-    component: 'Input',
-    label: t('wx_accounts.access_token')
-  },
-  {
-    field: 'token_expires_at',
-    component: 'Input',
-    label: t('wx_accounts.token_expires_at')
-  },
-  {
-    field: 'server_url',
-    component: 'Input',
-    label: t('wx_accounts.server_url')
-  },
-  {
-    field: 'token',
-    component: 'Input',
-    label: t('wx_accounts.token')
-  },
-  {
-    field: 'encoding_aes_key',
-    component: 'Input',
-    label: t('wx_accounts.encoding_aes_key')
+    component: 'Select',
+    label: t('wx_accounts.status'),
+    componentProps: {
+      options: statusOptions,
+      clearable: true
+    }
   }
 ])
 
@@ -185,23 +180,25 @@ const writeRef = ref<ComponentRef<typeof Write>>()
 const saveLoading = ref(false)
 
 const action = (row: any, type: string) => {
-  dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
+  dialogTitle.value = t(type === 'edit' ? 'usertable.edit' : 'usertable.detail')
   actionType.value = type
   currentRow.value = row
   dialogVisible.value = true
 }
 
 const AddAction = () => {
-  dialogTitle.value = t('exampleDemo.add')
+  dialogTitle.value = t('usertable.add')
   actionType.value = 'add'
   const addRow = {
     id: 0,
+    app_id: '',
     app_secret: '',
     account_name: '',
-    account_type: '',
-    status: null,
-    access_token: null,
-    token_expires_at: null,
+    account_type: 1,
+    status: 1,
+    message_mode: 1,
+    original_id: null,
+    wechat_id: null,
     server_url: null,
     token: null,
     encoding_aes_key: null
@@ -236,7 +233,7 @@ const save = async () => {
   <ContentWrap>
     <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
     <div class="mb-10px">
-      <BaseButton type="primary" @click="AddAction">{ t('exampleDemo.add') }</BaseButton>
+      <BaseButton type="primary" @click="AddAction">{{ t('usertable.add') }}</BaseButton>
     </div>
     <Table
       v-model:current-page="page_num"
@@ -263,9 +260,9 @@ const save = async () => {
         :loading="saveLoading"
         @click="save"
       >
-        { t('exampleDemo.save') }
+        {{ t('usertable.save') }}
       </BaseButton>
-      <BaseButton @click="dialogVisible = false">{ t('dialogDemo.close') }</BaseButton>
+      <BaseButton @click="dialogVisible = false">{{ t('button.close') }}</BaseButton>
     </template>
   </Dialog>
 </template>

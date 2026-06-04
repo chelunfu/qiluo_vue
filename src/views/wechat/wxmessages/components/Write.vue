@@ -4,6 +4,7 @@ import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch, ref } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
+import { GetWxAccountsList } from '@/api/wx_accounts'
 
 const { t } = useI18n()
 
@@ -18,9 +19,19 @@ const props = defineProps({
 
 const formSchema = ref<FormSchema[]>([
   {
-    field: 'id',
-    label: t('wx_messages.id'),
-    component: 'InputNumber',
+    field: 'account_id',
+    label: t('wx_messages.account_id'),
+    component: 'Select',
+    componentProps: {
+      filterable: true
+    },
+    optionApi: async () => {
+      const res = await GetWxAccountsList({ page_num: 1, page_size: 100 })
+      return (res.data.list || []).map((item: any) => ({
+        label: item.account_name,
+        value: item.id
+      }))
+    },
     colProps: {
       span: 24
     }
@@ -36,7 +47,17 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'msg_type',
     label: t('wx_messages.msg_type'),
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_messages.msg_type_text'), value: 'text' },
+        { label: t('wx_messages.msg_type_image'), value: 'image' },
+        { label: t('wx_messages.msg_type_voice'), value: 'voice' },
+        { label: t('wx_messages.msg_type_video'), value: 'video' },
+        { label: t('wx_messages.msg_type_event'), value: 'event' },
+        { label: t('wx_messages.msg_type_link'), value: 'link' }
+      ]
+    },
     colProps: {
       span: 24
     }
@@ -44,7 +65,13 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'direction',
     label: t('wx_messages.direction'),
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_messages.direction_receive'), value: 1 },
+        { label: t('wx_messages.direction_send'), value: 2 }
+      ]
+    },
     colProps: {
       span: 24
     }
@@ -52,71 +79,7 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'content',
     label: t('wx_messages.content'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'pic_url',
-    label: t('wx_messages.pic_url'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'voice_format',
-    label: t('wx_messages.voice_format'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'recognition',
-    label: t('wx_messages.recognition'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'msg_title',
-    label: t('wx_messages.msg_title'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'msg_description',
-    label: t('wx_messages.msg_description'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'link_url',
-    label: t('wx_messages.link_url'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'event_type',
-    label: t('wx_messages.event_type'),
-    component: 'Input',
-    colProps: {
-      span: 24
-    }
-  },
-  {
-    field: 'event_key',
-    label: t('wx_messages.event_key'),
-    component: 'Input',
+    component: 'InputTextarea',
     colProps: {
       span: 24
     }
@@ -124,7 +87,13 @@ const formSchema = ref<FormSchema[]>([
   {
     field: 'is_auto_reply',
     label: t('wx_messages.is_auto_reply'),
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: t('wx_messages.is_auto_reply_no'), value: 0 },
+        { label: t('wx_messages.is_auto_reply_yes'), value: 1 }
+      ]
+    },
     colProps: {
       span: 24
     }
@@ -132,7 +101,7 @@ const formSchema = ref<FormSchema[]>([
 ])
 
 const rules = reactive({
-  id: [required()],
+  account_id: [required()],
   openid: [required()],
   msg_type: [required()],
   direction: [required()]
@@ -156,7 +125,6 @@ watch(
   () => props.currentRow,
   (currentRow) => {
     if (!currentRow) return
-    console.log(currentRow)
     setValues(currentRow)
   },
   {

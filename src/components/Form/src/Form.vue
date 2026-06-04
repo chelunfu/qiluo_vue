@@ -153,6 +153,9 @@ export default defineComponent({
     }
 
     const getOptions = async (fn: Function, item: FormSchema) => {
+      // 防止重复请求：已请求过或正在请求中，跳过
+      if ((item as any)._optionLoaded) return
+      ;(item as any)._optionLoaded = true
       const options = await fn()
       setSchema([
         {
